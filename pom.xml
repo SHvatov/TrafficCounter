@@ -10,7 +10,8 @@
     </parent>
     <groupId>com.ishvatov</groupId>
     <artifactId>spark</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <version>0.0.1</version>
     <name>SparkStreaming</name>
     <description>Application, which reads the volume of captured traffic and sends alert message to Kafka.</description>
 
@@ -37,11 +38,11 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
-        <!-- MYSQL CONNECTOR FOR HIBERNATE -->
+        <!-- POSTGRESQL CONNECTOR FOR HIBERNATE -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.8</version>
         </dependency>
 
         <!-- LOMBOK -->
@@ -49,6 +50,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- JAVAX VALIDATION ANNOTATIONS -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.0.Final</version>
         </dependency>
 
         <!-- TESTING -->
