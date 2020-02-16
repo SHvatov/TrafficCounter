@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class SchedulerConfiguration {
     @Bean
     public ScheduledExecutorService scheduledExecutorService() {
-        return Executors.newScheduledThreadPool(2);
+        return Executors.newScheduledThreadPool(3);
     }
 
     @Bean

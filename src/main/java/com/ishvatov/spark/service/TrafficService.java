@@ -1,6 +1,7 @@
 package com.ishvatov.spark.service;
 
 import com.ishvatov.spark.exception.InvalidLimitsNumberException;
+import com.ishvatov.spark.exception.InvalidLimitsValueException;
 import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
 import com.ishvatov.spark.utils.Pair;
 
@@ -9,6 +10,7 @@ public interface TrafficService {
     /**
      * @return the pair of records from the limits_per_hour table with maximum effective_date value.
      * @throws InvalidLimitsNumberException if there is zero or only one record
+     * @throws InvalidLimitsValueException  if min >= max
      */
     Pair<LimitsPerHourEntity, LimitsPerHourEntity> fetchTrafficLimits();
 

@@ -1,5 +1,7 @@
 package com.ishvatov.spark.service;
 
+import com.ishvatov.spark.exception.InvalidLimitsNumberException;
+import com.ishvatov.spark.exception.InvalidLimitsValueException;
 import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
 import com.ishvatov.spark.model.repository.LimitsPerHourRepository;
 import com.ishvatov.spark.utils.Pair;
@@ -24,7 +26,15 @@ public class TrafficServiceImpl implements TrafficService {
 
     @Override
     public Pair<LimitsPerHourEntity, LimitsPerHourEntity> fetchTrafficLimits() {
-        return repository.findLimits();
+        LimitsPerHourEntity min = repository.findMinimumLimit()
+                .orElseThrow(InvalidLimitsNumberException::new);
+        LimitsPerHourEntity max = repository.findMaximumLimit()
+                .orElseThrow(InvalidLimitsNumberException::new);
+
+        if (min.getLimitValue() >= max.getLimitValue()) {
+            throw new InvalidLimitsValueException();
+        }
+        return new Pair<>(min, max);
     }
 
     @Override

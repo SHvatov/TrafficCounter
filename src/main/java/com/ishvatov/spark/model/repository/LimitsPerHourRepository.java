@@ -1,8 +1,6 @@
 package com.ishvatov.spark.model.repository;
 
-import com.ishvatov.spark.exception.InvalidLimitsNumberException;
 import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
-import com.ishvatov.spark.utils.Pair;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -45,14 +43,4 @@ public interface LimitsPerHourRepository extends JpaRepository<LimitsPerHourEnti
                     "and limit_name = 'min' limit 1"
     )
     Optional<LimitsPerHourEntity> findMinimumLimit();
-
-    /**
-     * @return the pair of records from the limits_per_hour table with maximum effective_date value.
-     * @throws InvalidLimitsNumberException if there is zero or only one record
-     */
-    default Pair<LimitsPerHourEntity, LimitsPerHourEntity> findLimits() {
-        LimitsPerHourEntity min = findMinimumLimit().orElseThrow(InvalidLimitsNumberException::new);
-        LimitsPerHourEntity max = findMaximumLimit().orElseThrow(InvalidLimitsNumberException::new);
-        return new Pair<>(min, max);
-    }
 }
