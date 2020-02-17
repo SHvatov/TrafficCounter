@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @PropertySource(value = "classpath:kafka.properties")
 public class TrafficServiceImpl implements TrafficService {
+    // autowired variables
     private final LimitsPerHourRepository repository;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -31,19 +32,21 @@ public class TrafficServiceImpl implements TrafficService {
         LimitsPerHourEntity max = repository.findMaximumLimit()
                 .orElseThrow(InvalidLimitsNumberException::new);
 
-        if (min.getLimitValue() >= max.getLimitValue()) {
+        if (min.getLimitValue() > max.getLimitValue()) {
             throw new InvalidLimitsValueException();
         }
         return new Pair<>(min, max);
     }
 
     @Override
-    public void validateTransferredTraffic(int current, Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits) {
+    public boolean validateTrafficAndSendNotification(int current, Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits) {
         if (current < limits.getFirst().getLimitValue() || current > limits.getSecond().getLimitValue()) {
             kafkaTemplate.send(
                     topicName,
                     String.format(alertMessage, current, limits.getFirst(), limits.getSecond())
             );
+            return true;
         }
+        return false;
     }
 }

@@ -5,11 +5,7 @@ import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
 import com.ishvatov.spark.service.TrafficService;
 import com.ishvatov.spark.utils.Pair;
 import lombok.RequiredArgsConstructor;
-import org.pcap4j.core.PcapHandle;
-import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.PcapPacket;
-import org.pcap4j.core.Pcaps;
-import org.pcap4j.util.NifSelector;
+import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +16,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PreDestroy;
-import java.net.InetAddress;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -35,6 +30,7 @@ public class SparkStreamingApplication implements CommandLineRunner {
 
     // pcap handler initialization constants
     private static final int INFINITE_PACKET_NUMBER = -1;
+    private static final String DEFAULT_DEV = "any";
     private static final int SNAP_LEN = 65536;
     private static final int TIMEOUT = 10;
 
@@ -56,16 +52,16 @@ public class SparkStreamingApplication implements CommandLineRunner {
     private TimeUnit writeTimeUnits;
 
     // Shared mutable variable, which stores the information about limits
-    private Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits = null;
+    private Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits = new Pair<>(null, null);
 
     // Pcap handler, which is used to interact with pcap api
-    private PcapHandle pcapHandle = null;
+    private PcapHandle pcapHandler = null;
 
     // stores the amount of the traffic that has already been transferred.
-    private int currentTransferredData = 0; // in bytes
+    private int totalTransferredData = 0;
 
     // stores the amount of the traffic that has been transferred previously.
-    private int previousTransferredData = 0; // in bytes
+    private int previousTransferredData = 0;
 
     public static void main(String[] args) {
         SpringApplication.run(SparkStreamingApplication.class, args);
@@ -80,7 +76,7 @@ public class SparkStreamingApplication implements CommandLineRunner {
         }
 
         // close the Pcap handler
-        pcapHandle.close();
+        pcapHandler.close();
 
         // log about shutdown
         LOGGER.info("Application is shutdown!");
@@ -90,34 +86,46 @@ public class SparkStreamingApplication implements CommandLineRunner {
     public void run(String... args) {
         try {
             // initialize the pcap interface
-            PcapNetworkInterface pcapNetworkInterface;
+            PcapNetworkInterface pcapNetworkInterface = Pcaps.getDevByName(DEFAULT_DEV);
+
+            // init filter if needed
+            String filter = null;
             if (args.length != 0) {
-                InetAddress addr = InetAddress.getByName(args[0]);
-                pcapNetworkInterface = Pcaps.getDevByAddress(addr);
-            } else {
-                pcapNetworkInterface = new NifSelector().selectNetworkInterface();
+                filter = String.format("net %s", args[0]);
             }
 
+            LOGGER.info(
+                    "Using the following device: {} with the follwoing filter: {}",
+                    pcapNetworkInterface,
+                    filter == null ? "None" : filter
+            );
+
             // open pcap handle which is used to set listeners and get the results
-            pcapHandle = pcapNetworkInterface.openLive(
+            pcapHandler = pcapNetworkInterface.openLive(
                     SNAP_LEN,
                     PcapNetworkInterface.PromiscuousMode.PROMISCUOUS,
                     TIMEOUT
             );
+
+            // set filter
+            if (filter != null) {
+                pcapHandler.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
+            }
 
             // start pcap loop
             scheduler.execute(
                     () -> {
                         try {
                             // add listener on the handler
-                            pcapHandle.loop(
+                            pcapHandler.loop(
                                     INFINITE_PACKET_NUMBER,
                                     (PcapPacket packet) -> {
-                                        currentTransferredData += packet.getRawData().length;
+                                        totalTransferredData += packet.length();
                                         LOGGER.info(
                                                 String.format(
-                                                        "Received packet! Current data amount: %s",
-                                                        currentTransferredData
+                                                        "Received packet!\n\tCurrent data amount: %s\n\tPrevious: %s",
+                                                        totalTransferredData,
+                                                        previousTransferredData
                                                 )
                                         );
                                     }
@@ -148,7 +156,7 @@ public class SparkStreamingApplication implements CommandLineRunner {
     public void fetchLimits() {
         lock.writeLock().lock();
         try {
-            limits = trafficService.fetchTrafficLimits();
+            limits.update(trafficService.fetchTrafficLimits());
             LOGGER.info(String.format("Fetched limits from database: %s!", limits));
         } finally {
             lock.writeLock().unlock();
@@ -163,12 +171,15 @@ public class SparkStreamingApplication implements CommandLineRunner {
         try {
             // make thread local copy of the variable to prevent
             // data loose due to the variable value update in the 'loop' thread
-            int tempCurrent = currentTransferredData;
-            int difference = tempCurrent - previousTransferredData;
-            previousTransferredData = tempCurrent;
+            int tempTotal = totalTransferredData;
+            int difference = tempTotal - previousTransferredData;
+            previousTransferredData = tempTotal;
 
-            trafficService.validateTransferredTraffic(difference, limits);
-            LOGGER.info("Validated limits from database!");
+            if (trafficService.validateTrafficAndSendNotification(difference, limits)) {
+                LOGGER.info("Current traffic [{}] is out of range! Notification was sent!", difference);
+            } else {
+                LOGGER.info("Current traffic is in range!");
+            }
         } finally {
             lock.readLock().unlock();
         }

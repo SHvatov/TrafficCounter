@@ -20,6 +20,7 @@ public interface TrafficService {
      *
      * @param current current amount of transferred data
      * @param limits  current limits of transferred data
+     * @return true, if transferred traffic is out of range and message was sent, false otherwise.
      */
-    void validateTransferredTraffic(int current, Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits);
+    boolean validateTrafficAndSendNotification(int current, Pair<LimitsPerHourEntity, LimitsPerHourEntity> limits);
 }
