@@ -1,4 +1,4 @@
-package com.ishvatov.spark.exception;
+package com.ishvatov.traffic.exception;
 
 /**
  * Wrapper, which is used to wrap checked Pcap exceptions.

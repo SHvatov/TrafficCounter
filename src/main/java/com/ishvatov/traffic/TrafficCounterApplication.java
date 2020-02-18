@@ -1,9 +1,9 @@
-package com.ishvatov.spark;
+package com.ishvatov.traffic;
 
-import com.ishvatov.spark.exception.PcapRuntimeException;
-import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
-import com.ishvatov.spark.service.TrafficService;
-import com.ishvatov.spark.utils.Pair;
+import com.ishvatov.traffic.exception.PcapRuntimeException;
+import com.ishvatov.traffic.model.entity.LimitsPerHourEntity;
+import com.ishvatov.traffic.service.TrafficService;
+import com.ishvatov.traffic.utils.Pair;
 import lombok.RequiredArgsConstructor;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
@@ -24,9 +24,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 @SpringBootApplication
 @RequiredArgsConstructor
 @PropertySource(value = "classpath:schedule.properties")
-public class SparkStreamingApplication implements CommandLineRunner {
+public class TrafficCounterApplication implements CommandLineRunner {
     // logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparkStreamingApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrafficCounterApplication.class);
 
     // pcap handler initialization constants
     private static final int INFINITE_PACKET_NUMBER = -1;
@@ -64,7 +64,7 @@ public class SparkStreamingApplication implements CommandLineRunner {
     private int previousTransferredData = 0;
 
     public static void main(String[] args) {
-        SpringApplication.run(SparkStreamingApplication.class, args);
+        SpringApplication.run(TrafficCounterApplication.class, args);
     }
 
     @PreDestroy
@@ -95,7 +95,7 @@ public class SparkStreamingApplication implements CommandLineRunner {
             }
 
             LOGGER.info(
-                    "Using the following device: {} with the follwoing filter: {}",
+                    "Using the following device: {} with the following filter: {}",
                     pcapNetworkInterface,
                     filter == null ? "None" : filter
             );

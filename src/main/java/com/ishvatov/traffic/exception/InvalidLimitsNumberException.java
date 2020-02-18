@@ -1,4 +1,4 @@
-package com.ishvatov.spark.exception;
+package com.ishvatov.traffic.exception;
 
 /**
  * Basic runtime exception, which is thrown, when zero or more than one

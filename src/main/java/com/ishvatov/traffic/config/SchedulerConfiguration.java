@@ -1,4 +1,4 @@
-package com.ishvatov.spark.config;
+package com.ishvatov.traffic.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

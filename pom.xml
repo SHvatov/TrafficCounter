@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ishvatov</groupId>
-    <artifactId>spark</artifactId>
+    <artifactId>traffic</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1</version>
     <name>SparkStreaming</name>
@@ -101,7 +101,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.ishvatov.spark.SparkStreamingApplication</mainClass>
+                            <mainClass>com.ishvatov.traffic.TrafficCounterApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

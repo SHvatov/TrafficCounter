@@ -1,6 +1,6 @@
-package com.ishvatov.spark.model.repository;
+package com.ishvatov.traffic.model.repository;
 
-import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
+import com.ishvatov.traffic.model.entity.LimitsPerHourEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

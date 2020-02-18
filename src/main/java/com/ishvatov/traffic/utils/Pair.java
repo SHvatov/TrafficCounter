@@ -1,4 +1,4 @@
-package com.ishvatov.spark.utils;
+package com.ishvatov.traffic.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

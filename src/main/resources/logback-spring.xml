@@ -42,7 +42,7 @@
     </root>
 
     <!-- LOG "com.ishvatov.spark.*" at TRACE level -->
-    <logger name="com.ishvatov.spark" level="trace" additivity="false">
+    <logger name="com.ishvatov.traffic" level="trace" additivity="false">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>
     </logger>

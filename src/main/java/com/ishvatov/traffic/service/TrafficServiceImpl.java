@@ -1,10 +1,10 @@
-package com.ishvatov.spark.service;
+package com.ishvatov.traffic.service;
 
-import com.ishvatov.spark.exception.InvalidLimitsNumberException;
-import com.ishvatov.spark.exception.InvalidLimitsValueException;
-import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
-import com.ishvatov.spark.model.repository.LimitsPerHourRepository;
-import com.ishvatov.spark.utils.Pair;
+import com.ishvatov.traffic.exception.InvalidLimitsNumberException;
+import com.ishvatov.traffic.exception.InvalidLimitsValueException;
+import com.ishvatov.traffic.model.entity.LimitsPerHourEntity;
+import com.ishvatov.traffic.model.repository.LimitsPerHourRepository;
+import com.ishvatov.traffic.utils.Pair;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

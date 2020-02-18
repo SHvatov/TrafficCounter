@@ -1,11 +1,11 @@
-package com.ishvatov.spark;
+package com.ishvatov.traffic;
 
-import com.ishvatov.spark.exception.InvalidLimitsNumberException;
-import com.ishvatov.spark.exception.InvalidLimitsValueException;
-import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
-import com.ishvatov.spark.model.repository.LimitsPerHourRepository;
-import com.ishvatov.spark.service.TrafficService;
-import com.ishvatov.spark.utils.Pair;
+import com.ishvatov.traffic.exception.InvalidLimitsNumberException;
+import com.ishvatov.traffic.exception.InvalidLimitsValueException;
+import com.ishvatov.traffic.model.entity.LimitsPerHourEntity;
+import com.ishvatov.traffic.model.repository.LimitsPerHourRepository;
+import com.ishvatov.traffic.service.TrafficService;
+import com.ishvatov.traffic.utils.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link com.ishvatov.spark.service.TrafficServiceImpl} test class.
+ * {@link com.ishvatov.traffic.service.TrafficServiceImpl} test class.
  *
  * @author ishvatov
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
-        classes = SparkStreamingApplication.class,
+        classes = TrafficCounterApplication.class,
         initializers = ConfigFileApplicationContextInitializer.class
 )
 public class TrafficServiceTest {

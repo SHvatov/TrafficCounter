@@ -1,4 +1,4 @@
-package com.ishvatov.spark.model.entity;
+package com.ishvatov.traffic.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

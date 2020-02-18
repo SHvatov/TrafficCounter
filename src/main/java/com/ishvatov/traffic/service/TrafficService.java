@@ -1,9 +1,9 @@
-package com.ishvatov.spark.service;
+package com.ishvatov.traffic.service;
 
-import com.ishvatov.spark.exception.InvalidLimitsNumberException;
-import com.ishvatov.spark.exception.InvalidLimitsValueException;
-import com.ishvatov.spark.model.entity.LimitsPerHourEntity;
-import com.ishvatov.spark.utils.Pair;
+import com.ishvatov.traffic.exception.InvalidLimitsNumberException;
+import com.ishvatov.traffic.exception.InvalidLimitsValueException;
+import com.ishvatov.traffic.model.entity.LimitsPerHourEntity;
+import com.ishvatov.traffic.utils.Pair;
 
 public interface TrafficService {
 
