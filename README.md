@@ -14,7 +14,7 @@ Also, before application execution, please make sure, that your database and Apa
 are running on your machine.
 
 ## Eecution
-To start the application run command `java -jar spark-0.0.1.jar <ip>`,
+To start the application run command `java -jar traffic-0.0.1.jar <ip>`,
 where `<ip>` parameter is optional, and represents the ip-addres you want to listen to.
 If no ip is provided, then application will proccess all in\out traffic.
 
